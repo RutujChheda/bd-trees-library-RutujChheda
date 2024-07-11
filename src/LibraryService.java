@@ -1,3 +1,4 @@
+import model.Book;
 import org.apache.commons.lang3.NotImplementedException;
 import treestructure.BookNode;
 
@@ -36,7 +37,23 @@ public class LibraryService {
     public boolean isBookInLibraryByIsbn(String isbn) {
         // PARTICIPANTS: IMPLEMENT YOUR BINARY SEARCH HERE
 
-        throw new NotImplementedException("isBookInLibraryByIsbn is not yet implemented!");
+        BookNode current = books;
+
+        if (isbn == null || isbn.isEmpty()) {
+            return false;
+        }
+
+        while (current != null) {
+            int comparison = isbn.compareTo(current.getBook().getIsbn());
+            if (comparison == 0) {
+                return true;
+            } else if (comparison < 0) {
+                current = current.getLeft();
+            } else {
+                current = current.getRight();
+            }
+        }
+        return false;
     }
 
 
@@ -50,8 +67,23 @@ public class LibraryService {
      *         false otherwise
      */
     public boolean isBookInLibraryByTitleAndAuthor(String title, String author) {
-        // PARTICIPANTS: IMPLEMENT YOUR DEPTH FIRST SEARCH HERE
+        if (title == null || title.isEmpty() || author == null || author.isEmpty()) {
+            return false;
+        }
 
-        throw new NotImplementedException("isBookInLibraryByTitleAndAuthor is not yet implemented!");
+        return dfsSearch(books, title, author);
+    }
+
+    private boolean dfsSearch(BookNode node, String title, String author) {
+        if (node == null) {
+            return false;
+        }
+        Book currentBook = node.getBook();
+        // Direct comparison of title and author
+        if (title.equals(currentBook.getTitle()) && author.equals(currentBook.getAuthor())) {
+            return true;
+        }
+        // Recursively search left and right subtrees
+        return dfsSearch(node.getLeft(), title, author) || dfsSearch(node.getRight(), title, author);
     }
 }
